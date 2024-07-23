@@ -38,9 +38,8 @@ jobs:
         uses: actions/github-script@0.9.0
         with:
           script: |
-            const results = Buffer.from("${{steps.npm.outputs.result}}", "base64").toString("utf-8");
+            const results = JSON.parse(Buffer.from("${{steps.npm.outputs.result}}", "base64").toString("utf-8"));
             console.log("Reporting test results to 🧪🍰 SkillPies ")
-            console.log(results)
             const payload = {
               body: results,
               courseId: "introduction-to-css",
@@ -49,9 +48,12 @@ jobs:
               repository: github.repository,
               sha: github.sha
             };
-            console.log(JSON.stringify(payload))
+            console.log(JSON.stringify(payload, null, 2))
 
-            const result = axios.post('https://www.skillpies.com/api/test-report', payload).then(() => {
+            const result = fetch('https://www.skillpies.com/api/test-report', {
+              method: 'POST',
+              body: payload
+            }).then(() => {
               console.log("🏁 Reported")
               console.log(result);
             }).catch((e) => {
