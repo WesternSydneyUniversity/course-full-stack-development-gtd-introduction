@@ -20,6 +20,7 @@ jobs:
       - name: Test with Vitest
         id: npm
         uses: education/autograding-command-grader@v1
+        continue-on-error: true
         with:
           test-name: NPM
           setup-command: pnpm install
@@ -33,6 +34,7 @@ jobs:
         with:
           runners: npm
       - name: Report results to SkillPies
+        if: always()
         uses: actions/github-script@0.9.0
         with:
           script: |
