@@ -32,3 +32,24 @@ jobs:
           NPM_RESULTS: "${{steps.npm.outputs.result}}"
         with:
           runners: npm
+      - name: Report results to SkillPies
+        uses: actions/github-script@0.9.0
+        with:
+          script: |
+            console.log("Reporting test results to 🧪🍰 SkillPies ")
+            console.log("${{steps.npm.outputs.result}}")
+            const payload = {
+              body: "${{steps.npm.outputs.result}}"",
+              courseId: "introduction-to-css",
+              sectionId: "rest-of-the-course",
+              userId: github.actor,
+              repository: github.repository,
+              sha: github.sha
+            };
+
+            const result = await axios.post('https://www.skillpies.com/api/test-report', payload);
+            console.log("🏁 Reported")
+            console.log(result);
+            if (!result.data?.success) {
+              throw new Error(result.message) 
+            }
