@@ -53,9 +53,9 @@ jobs:
             const result = fetch('https://www.skillpies.com/api/test-report', {
               method: 'POST',
               body: payload
-            }).then(() => {
+            }).then((data) => {
               console.log("🏁 Reported")
-              console.log(result);
+              console.log(data);
             }).catch((e) => {
               throw e;
             });
