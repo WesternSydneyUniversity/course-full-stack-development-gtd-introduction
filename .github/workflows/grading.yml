@@ -44,9 +44,9 @@ jobs:
               body: results,
               courseId: "introduction-to-css",
               sectionId: "rest-of-the-course",
-              userId: "${{github.actor}}"",
-              repository: "${{github.repository}}"",
-              sha: "${{github.sha}}""
+              userId: "${{github.actor}}",
+              repository: "${{github.repository}}",
+              sha: "${{github.sha}}"
             };
             console.log(JSON.stringify(payload, null, 2))
 
