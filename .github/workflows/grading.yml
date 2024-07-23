@@ -45,8 +45,8 @@ jobs:
             const payload = {
               body: results,
               source: "github-classroom",
-              courseId: "${{COURSE_URL_ID}}",
-              sectionId: "${{SECTION_URL_ID}}",
+              courseId: "${{env.COURSE_URL_ID}}",
+              sectionId: "${{env.SECTION_URL_ID}}",
               userId: "${{github.actor}}",
               repository: "${{github.repository}}",
               sha: "${{github.sha}}"
