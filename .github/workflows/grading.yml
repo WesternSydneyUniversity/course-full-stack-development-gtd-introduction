@@ -38,20 +38,22 @@ jobs:
         uses: actions/github-script@0.9.0
         with:
           script: |
+            const results = Buffer.from("${{steps.npm.outputs.result}}", "base64").toString("utf-8");
             console.log("Reporting test results to 🧪🍰 SkillPies ")
-            console.log("${{steps.npm.outputs.result}}")
+            console.log(results)
             const payload = {
-              body: "${{steps.npm.outputs.result}}"",
+              body: results,
               courseId: "introduction-to-css",
               sectionId: "rest-of-the-course",
               userId: github.actor,
               repository: github.repository,
               sha: github.sha
             };
+            console.log(JSON.stringify(payload))
 
-            const result = await axios.post('https://www.skillpies.com/api/test-report', payload);
-            console.log("🏁 Reported")
-            console.log(result);
-            if (!result.data?.success) {
-              throw new Error(result.message) 
-            }
+            const result = axios.post('https://www.skillpies.com/api/test-report', payload).then(() => {
+              console.log("🏁 Reported")
+              console.log(result);
+            }).catch((e) => {
+              throw e;
+            });
