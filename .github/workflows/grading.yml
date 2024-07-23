@@ -1,4 +1,7 @@
 name: Autograding Tests
+env:
+  COURSE_URL_ID: introduction-to-css
+  SECTION_URL_ID: rest-of-the-course
 "on":
   - push
   - workflow_dispatch
@@ -33,32 +36,36 @@ jobs:
           NPM_RESULTS: "${{steps.npm.outputs.result}}"
         with:
           runners: npm
-      - name: Report results to SkillPies
+      - name: Report results to SkillPies.com
         if: always()
         uses: actions/github-script@0.9.0
         with:
           script: |
             const results = JSON.parse(Buffer.from("${{steps.npm.outputs.result}}", "base64").toString("utf-8"));
-            console.log("Reporting test results to 🧪🍰 SkillPies ")
             const payload = {
               body: results,
-              courseId: "introduction-to-css",
-              sectionId: "rest-of-the-course",
+              source: "github-classroom",
+              courseId: "$COURSE_URL_ID",
+              sectionId: "$SECTION_URL_ID",
               userId: "${{github.actor}}",
               repository: "${{github.repository}}",
               sha: "${{github.sha}}"
             };
+            console.log("Reporting test results to 🧪🍰 SkillPies ")
             console.log(JSON.stringify(payload, null, 2))
 
             const result = fetch('https://www.skillpies.com/api/test-report', {
               method: 'POST',
-              body: payload
+              body: JSON.stringify(payload),
+              headers: {
+                "Content-Type": "application/json",
+              },
             }).then((data) => {
               const result = data.json();
               
               if (data.status !== 201) {
                 console.log("❌ Error in Reporting")
-                const json = result.then(() => {
+                result.then((json) => {
                   throw new Error(JSON.stringify(json))
                 });
               } else {
