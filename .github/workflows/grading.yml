@@ -44,9 +44,9 @@ jobs:
               body: results,
               courseId: "introduction-to-css",
               sectionId: "rest-of-the-course",
-              userId: github.actor,
-              repository: github.repository,
-              sha: github.sha
+              userId: ${{github.actor}},
+              repository: ${{github.repository}},
+              sha: ${{github.sha}}
             };
             console.log(JSON.stringify(payload, null, 2))
 
@@ -54,8 +54,16 @@ jobs:
               method: 'POST',
               body: payload
             }).then((data) => {
-              console.log("🏁 Reported")
-              console.log(data);
+              const result = data.json();
+              
+              if (data.status !== 201) {
+                console.log("❌ Error")
+                const json = result.then(() => {
+                  throw new Error(JSON.stringify(json))
+                });
+              } else {
+                console.log("🏁 Reported")
+              }
             }).catch((e) => {
               throw e;
             });
