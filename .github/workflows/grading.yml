@@ -1,7 +1,7 @@
 name: Autograding Tests
 env:
-  COURSE_URL_ID: introduction-to-css
-  SECTION_URL_ID: rest-of-the-course
+  COURSE_URL_ID: full-stack-development
+  SECTION_URL_ID: assignment-1-welcome-message-in-setup
 "on":
   - push
   - workflow_dispatch
