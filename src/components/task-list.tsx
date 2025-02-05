@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TaskItem } from "./task-item";
 import styles from "./task-list.module.css";
 
@@ -9,16 +10,27 @@ export type Task = {
   state: "PINNED" | "COMPLETED" | "ACTIVE";
 };
 
-export function TaskList({ tasks }: { tasks: Task[] }) {
+export function TaskList({ tasks: parentTasks }: { tasks: Task[] }) {
+  const [tasks, setTasks] = useState(parentTasks);
+  const [text, setText] = useState("");
+
+  const activeTasks = tasks.filter((task) => task.state === "ACTIVE");
   return (
     <>
       <div>
         <section className={styles.counter}>
-          <div className={styles.taskLabel}>0 tasks</div>
+          <div className={styles.taskLabel}>
+            {activeTasks.length} task{activeTasks.length == 1 ? "" : "s"}
+          </div>
         </section>
         <section className={styles.section}>
           {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              tasks={tasks}
+              setTasks={setTasks}
+            />
           ))}
         </section>
       </div>
@@ -27,8 +39,24 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
           type="text"
           placeholder="What needs to be done?"
           className={styles.taskInput}
+          onChange={(e) => setText(e.target.value)}
         />
-        <button className={styles.taskButton}>Add Task</button>
+        <button
+          className={styles.taskButton}
+          onClick={() => {
+            setTasks([
+              ...tasks,
+              {
+                id: Date.now().toString(),
+                title: text,
+                state: "ACTIVE"
+              }
+            ]);
+            setText("");
+          }}
+        >
+          Add Task
+        </button>
       </section>
     </>
   );
